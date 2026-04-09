@@ -1,35 +1,34 @@
 # Base image: Ruby with necessary dependencies for Jekyll
 FROM ruby:3.2
 
-# Install dependencies
+# 安装系统依赖（完整补齐 Jekyll 需要的包）
 RUN apt-get update && apt-get install -y \
     build-essential \
     nodejs \
+    git \
     && rm -rf /var/lib/apt/lists/*
 
-
-# Create a non-root user with UID 1000
+# 创建非 root 用户（与 devcontainer.json 一致）
 RUN groupadd -g 1000 vscode && \
     useradd -m -u 1000 -g vscode vscode
 
-# Set the working directory
+# 工作目录
 WORKDIR /usr/src/app
 
-# Set permissions for the working directory
+# 赋予权限
 RUN chown -R vscode:vscode /usr/src/app
 
-# Switch to the non-root user
+# 切换普通用户
 USER vscode
 
-# Copy Gemfile into the container (necessary for `bundle install`)
+# 复制 Gemfile
 COPY Gemfile ./
 
+# 安装 bundler（使用项目兼容版本）
+RUN gem install bundler -v 2.3.26
 
-
-# Install bundler and dependencies
-RUN gem install connection_pool:2.5.0
-RUN gem install bundler:2.3.26
+# 安装 Jekyll 所有依赖
 RUN bundle install
 
-# Command to serve the Jekyll site
-CMD ["jekyll", "serve", "-H", "0.0.0.0", "-w", "--config", "_config.yml,_config_docker.yml"]
+# 启动命令（与 docker-compose.yml 保持一致）
+CMD ["bundle", "exec", "jekyll", "serve", "-H", "0.0.0.0", "-w", "--config", "_config.yml,_config_docker.yml"]

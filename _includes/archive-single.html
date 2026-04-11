@@ -14,47 +14,47 @@
 
 <div class="{{ include.type | default: 'list' }}__item">
   <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    <!-- 图片渲染：无论list/grid布局都显示，适配base_path -->
-    {% if teaser %}
-      <div class="archive__item-teaser" style="float: left; margin-right: 20px; margin-bottom: 15px; width: 150px;">
-        <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ teaser | prepend: base_path }}{% endif %}" 
-             alt="{{ title }}" style="width: 100%; height: auto; border-radius: 4px;">
-      </div>
-      <div style="overflow: hidden;">
-    {% endif %}
-
-    <h2 class="archive__item-title" itemprop="headline">
-      {% if post.link %}
-        <a href="{{ post.link }}">{{ title }}</a>
-        <a href="{{ base_path }}{{ post.url }}" rel="permalink">
-          <i class="fa fa-link" aria-hidden="true" title="permalink"></i>
-          <span class="sr-only">Permalink</span>
-        </a>
-      {% else %}
-        <a href="{{ base_path }}{{ post.url }}" rel="permalink">{{ title }}</a>
+    <!-- 核心优化：整体容器弹性布局 + 垂直居中 -->
+    <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 25px;">
+      {% if teaser %}
+        <!-- 图片容器：高度拉满 + 居中显示 -->
+        <div class="archive__item-teaser" style="width: 200px; flex-shrink: 0;">
+          <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ teaser | prepend: base_path }}{% endif %}" 
+               alt="{{ title }}" 
+               style="width: 100%; height: auto; min-height: 180px; object-fit: cover; border-radius: 4px;">
+        </div>
       {% endif %}
-    </h2>
 
-    {% if post.collection == 'publications' %}
-      <p>Published in <i>{{ post.venue }}</i>, {{ post.date | default: '1900-01-01' | date: '%Y' }}</p>
-    {% endif %}
+      <!-- 文本容器：与图片垂直居中 -->
+      <div style="flex: 1;">
+        <h2 class="archive__item-title" itemprop="headline">
+          {% if post.link %}
+            <a href="{{ post.link }}">{{ title }}</a>
+            <a href="{{ base_path }}{{ post.url }}" rel="permalink">
+              <i class="fa fa-link" aria-hidden="true" title="permalink"></i>
+              <span class="sr-only">Permalink</span>
+            </a>
+          {% else %}
+            <a href="{{ base_path }}{{ post.url }}" rel="permalink">{{ title }}</a>
+          {% endif %}
+        </h2>
 
-    {% if post.excerpt %}
-      <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
-    {% endif %}
-    
-    {% if post.citation and post.paperurl %}
-      <p>Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a></p>
-    {% elsif post.citation %}
-      <p>Recommended citation: {{ post.citation }}</p>
-    {% elsif post.paperurl %}
-      <p><a href="{{ post.paperurl }}">Download Paper</a></p>
-    {% endif %}
+        {% if post.collection == 'publications' %}
+          <p>Published in <i>{{ post.venue }}</i>, {{ post.date | default: '1900-01-01' | date: '%Y' }}</p>
+        {% endif %}
 
-    <!-- 关闭浮动容器 -->
-    {% if teaser %}
+        {% if post.excerpt %}
+          <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
+        {% endif %}
+        
+        {% if post.citation and post.paperurl %}
+          <p>Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a></p>
+        {% elsif post.citation %}
+          <p>Recommended citation: {{ post.citation }}</p>
+        {% elsif post.paperurl %}
+          <p><a href="{{ post.paperurl }}">Download Paper</a></p>
+        {% endif %}
       </div>
-      <div style="clear: both; margin-bottom: 25px;"></div>
-    {% endif %}
+    </div>
   </article>
 </div>

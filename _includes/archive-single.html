@@ -14,18 +14,19 @@
 
 <div class="{{ include.type | default: 'list' }}__item">
   <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    <!-- 核心优化：整体容器弹性布局 + 垂直居中 -->
-    <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 25px;">
+    <!-- 外层弹性布局：垂直居中对齐，统一间距 -->
+    <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px; min-height: 160px;">
       {% if teaser %}
-        <!-- 图片容器：高度拉满 + 居中显示 -->
-        <div class="archive__item-teaser" style="width: 200px; flex-shrink: 0;">
+        <!-- 图片容器：固定最大尺寸，完整显示原图，无裁剪 -->
+        <div class="archive__item-teaser" 
+             style="width: 200px; max-height: 160px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
           <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ teaser | prepend: base_path }}{% endif %}" 
                alt="{{ title }}" 
-               style="width: 100%; height: auto; min-height: 180px; object-fit: cover; border-radius: 4px;">
+               style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 4px;">
         </div>
       {% endif %}
 
-      <!-- 文本容器：与图片垂直居中 -->
+      <!-- 文本容器：自适应剩余宽度，与图片居中对齐 -->
       <div style="flex: 1;">
         <h2 class="archive__item-title" itemprop="headline">
           {% if post.link %}

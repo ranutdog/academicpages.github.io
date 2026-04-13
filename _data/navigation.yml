@@ -12,7 +12,7 @@ main:
   - title: "首页"
     url: /
 
-  - title: "博客"
+  - title: "新闻"
     url: /posts/
 
   - title: "教学"
@@ -24,8 +24,8 @@ main:
   - title: "项目"
     url: /portfolio/
 
-  - title: "演讲"
-    url: /talks/
+  #- title: "演讲"
+  #  url: /talks/
 
   - title: "关于"
     url: /about/

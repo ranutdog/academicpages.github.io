@@ -1,0 +1,17 @@
+---
+title: "新闻"
+layout: archive
+permalink: /posts/
+author_profile: true
+---
+
+<!-- 新增新闻标题，样式更贴合学术页面 -->
+<div style="margin-bottom: 30px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+  <h1 style="font-size: 28px; color: #333;">课题组新闻</h1>
+  <p style="color: #666;">及时了解课题组最新动态、项目成果与学术交流</p>
+</div>
+
+{% assign news_posts = site.posts | where: "categories", "news" %}
+{% for post in news_posts reversed %}
+  {% include archive-single.html %}
+{% endfor %}

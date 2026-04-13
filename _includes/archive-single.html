@@ -3,7 +3,11 @@
 {% if post.header.teaser %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
 {% else %}
-  {% assign teaser = site.teaser %}
+  {% if post.collection == 'publications' %}
+    {% assign teaser = site.teaser %}
+  {% else %}
+    {% assign teaser = "/assets/images/blog_01.png" %}
+  {% endif %}
 {% endif %}
 
 {% if post.id %}
@@ -14,20 +18,17 @@
 
 <div class="{{ include.type | default: 'list' }}__item">
   <article class="archive__item" itemscope itemtype="https://schema.org/CreativeWork">
-    <!-- 外层弹性布局：垂直居中对齐，统一间距 -->
-    <div style="display: flex; align-items: center; gap: 25px; margin-bottom: 30px; min-height: 160px;">
+    <div style="display: flex; align-items: flex-start; gap: 25px; margin-bottom: 40px;">
       {% if teaser %}
-        <!-- 图片容器：固定最大尺寸，完整显示原图，无裁剪 -->
         <div class="archive__item-teaser" 
-             style="width: 200px; max-height: 160px; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+             style="width: 220px; flex-shrink: 0; display: flex; align-items: flex-start;">
           <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ teaser | prepend: base_path }}{% endif %}" 
                alt="{{ title }}" 
-               style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border-radius: 4px;">
+               style="width: 100%; height: auto; object-fit: contain; border-radius: 4px;">
         </div>
       {% endif %}
 
-      <!-- 文本容器：自适应剩余宽度，与图片居中对齐 -->
-      <div style="flex: 1;">
+      <div style="flex: 1; padding-top: 5px;">
         <h2 class="archive__item-title" itemprop="headline">
           {% if post.link %}
             <a href="{{ post.link }}">{{ title }}</a>
@@ -45,15 +46,29 @@
         {% endif %}
 
         {% if post.excerpt %}
-          <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
+          <p class="archive__item-excerpt" itemprop="description" style="color: #333; line-height: 1.6; margin-top: 10px;">
+            {% if post.collection == 'publications' %}
+              {{ post.excerpt | markdownify }}
+            {% else %}
+              {{ post.excerpt | markdownify | strip_html | truncate: 200 }}
+            {% endif %}
+          </p>
+        {% else %}
+          <p class="archive__item-excerpt" itemprop="description" style="color: #333; line-height: 1.6; margin-top: 10px;">
+            {% if post.collection != 'publications' %}
+              {{ post.content | markdownify | strip_html | truncate: 200 }}
+            {% endif %}
+          </p>
         {% endif %}
         
-        {% if post.citation and post.paperurl %}
-          <p>Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a></p>
-        {% elsif post.citation %}
-          <p>Recommended citation: {{ post.citation }}</p>
-        {% elsif post.paperurl %}
-          <p><a href="{{ post.paperurl }}">Download Paper</a></p>
+        {% if post.collection == 'publications' %}
+          {% if post.citation and post.paperurl %}
+            <p>Recommended citation: {{ post.citation }}<br /><a href="{{ post.paperurl }}">Download Paper</a></p>
+          {% elsif post.citation %}
+            <p>Recommended citation: {{ post.citation }}</p>
+          {% elsif post.paperurl %}
+            <p><a href="{{ post.paperurl }}">Download Paper</a></p>
+          {% endif %}
         {% endif %}
       </div>
     </div>

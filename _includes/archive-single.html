@@ -3,10 +3,13 @@
 {% if post.header.teaser %}
   {% capture teaser %}{{ post.header.teaser }}{% endcapture %}
 {% else %}
-  {% if post.collection == 'publications' %}
+  {% comment %} 仅新闻页面（collection=posts）默认使用blog_01.png {% endcomment %}
+  {% if post.collection == 'posts' %}
+    {% assign teaser = "/assets/images/blog_01.png" %}
+  {% elsif post.collection == 'publications' %}
     {% assign teaser = site.teaser %}
   {% else %}
-    {% assign teaser = "/assets/images/blog_01.png" %}
+    {% assign teaser = nil %}  <!-- 教学/其他页面不显示默认图 -->
   {% endif %}
 {% endif %}
 
@@ -22,7 +25,9 @@
       {% if teaser %}
         <div class="archive__item-teaser" 
              style="width: 220px; flex-shrink: 0; display: flex; align-items: flex-start;">
-          <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ teaser | prepend: base_path }}{% endif %}" 
+          {% comment %} 强制拼接base_path，确保路径正确 {% endcomment %}
+          {% assign full_teaser_path = teaser | prepend: base_path %}
+          <img src="{% if teaser contains '://' %}{{ teaser }}{% else %}{{ full_teaser_path }}{% endif %}" 
                alt="{{ title }}" 
                style="width: 100%; height: auto; object-fit: contain; border-radius: 4px;">
         </div>
@@ -55,7 +60,7 @@
           </p>
         {% else %}
           <p class="archive__item-excerpt" itemprop="description" style="color: #333; line-height: 1.6; margin-top: 10px;">
-            {% if post.collection != 'publications' %}
+            {% if post.collection == 'posts' %}
               {{ post.content | markdownify | strip_html | truncate: 200 }}
             {% endif %}
           </p>
